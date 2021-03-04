@@ -1,0 +1,9 @@
+#name Advaced Viewport Shader
+
+#version 330
+#hou_attrib_map
+#input gl_uvprojection 9
+
+advanced_viewport_shader.vert
+advanced_viewport_shader.frag
+advanced_viewport_shader.geom
