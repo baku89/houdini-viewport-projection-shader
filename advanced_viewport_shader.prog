@@ -2,8 +2,12 @@
 
 #version 330
 #hou_attrib_map
-#input gl_projection 9
-#input rest 10
+#input rest 9
+#input projection 10
+#input projection_t 11
+#input projection_y 12
+#input projection_z 13
+#input projection_use_rest 14
 
 advanced_viewport_shader.vert
 advanced_viewport_shader.frag

@@ -3,6 +3,8 @@
 
 #line 1
 
+#define PI 3.14159265358979323
+
 in wparms
 {
     vec4 pos;
@@ -14,7 +16,7 @@ in wparms
     float selected;
 
     // Projection
-    flat in uint projection;
+    flat in int projection;
     vec3 rest;
 } fsIn;
 
@@ -198,6 +200,10 @@ vec3 HOUfrontFacing(vec3 n, vec3 p);
 
 uniform float glH_Ambient;
 
+float atan2(in float y, in float x){
+    return x == 0.0 ? sign(y)*PI/2 : atan(y, x);
+}
+
 void main()
 {
     vec3 nN, p;
@@ -222,25 +228,42 @@ void main()
     mtl = metal;
 
     // read in texture maps 
+    vec2 texcoord = fsIn.texcoord0;
+
+    vec3 rest = fsIn.rest;
+    if (fsIn.projection == 1) {
+        // Parallel
+        texcoord = rest.xy;
+    } else if (fsIn.projection == 2) {
+        // Spherical
+        texcoord = vec2(
+            atan2(rest.z, rest.x) / PI / 2.0 + 0.5,
+            atan2(rest.y, length(rest.xz)) / PI + 0.5
+        );
+    } else if (fsIn.projection == 3) {
+        // Camera
+        texcoord = rest.xy / rest.z / -2.0 + 0.5;
+    }
+
     if(has_diffuse_map)
-        tex = HOUsampleDiffuseMap(fsIn.texcoord0);
+        tex = HOUsampleDiffuseMap(texcoord);
     else
         tex = vec4(1.0);
 
     if(has_opacity_map)
-        tex.a *= HOUsampleOpacityMap(fsIn.texcoord0, invert_opacitymap,
+        tex.a *= HOUsampleOpacityMap(texcoord, invert_opacitymap,
                                      opacity_comp);
 
-    tex.rgb = fsIn.rest;
+    // tex.rgb *= fsIn.rest;
 
     if(has_emission_map)
-        memit = HOUsampleEmissionMap(fsIn.texcoord0);
+        memit = HOUsampleEmissionMap(texcoord);
     else
         memit = vec3(0.0);
 
 // #if MAX_TEXTURE_SAMPLERS >= 32
     if(has_occlusion_map)
-        tex.rgb *= dot(HOUsampleGenericMap(fsIn.texcoord0,
+        tex.rgb *= dot(HOUsampleGenericMap(texcoord,
                                            glH_OcclusionMap,
                                            glH_OcclusionArrayMap,
                                            occlusion_udim_area,
@@ -248,7 +271,7 @@ void main()
                                            occlusion_uv_xform),
                        occlusion_comp);
     if(has_metallic_map)
-        mtl *= dot(HOUsampleGenericMap(fsIn.texcoord0,
+        mtl *= dot(HOUsampleGenericMap(texcoord,
                                        glH_MetallicMap,
                                        glH_MetallicArrayMap,
                                        metallic_udim_area,
@@ -265,11 +288,11 @@ void main()
 
         // Normal map
         if(has_normal_map)
-            nN = HOUapplyNormalMap(p, nN, fsIn.texcoord0);
+            nN = HOUapplyNormalMap(p, nN, texcoord);
 
         // Roughness
         float rough_map = 1.0;
-        HOUapplyLightMaps(mspec, rough_map, has_spec_map, fsIn.texcoord0,
+        HOUapplyLightMaps(mspec, rough_map, has_spec_map, texcoord,
                           invert_roughmap, rough_comp);
         rough *= rough_map;
         diff_rough *= rough_map;

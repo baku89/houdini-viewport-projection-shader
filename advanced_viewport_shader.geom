@@ -15,7 +15,7 @@ in parms
     float selected;
     
     // Projection
-    flat in uint projection;
+    flat in int projection;
     vec3 rest;
 } gsIn[];
 
@@ -29,7 +29,7 @@ out wparms {
     float selected;
 
     // Projection
-    flat out uint projection;
+    flat out int projection;
     vec3 rest;
 } gsOut;
 
