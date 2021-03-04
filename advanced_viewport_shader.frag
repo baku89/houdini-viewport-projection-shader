@@ -12,6 +12,10 @@ in wparms
     noperspective in vec3 edgedist;
     flat in int edgeflags;
     float selected;
+
+    // Projection
+    flat in uint projection;
+    vec3 rest;
 } fsIn;
 
 layout(std140) uniform glH_Material
@@ -226,6 +230,8 @@ void main()
     if(has_opacity_map)
         tex.a *= HOUsampleOpacityMap(fsIn.texcoord0, invert_opacitymap,
                                      opacity_comp);
+
+    tex.rgb = fsIn.rest;
 
     if(has_emission_map)
         memit = HOUsampleEmissionMap(fsIn.texcoord0);

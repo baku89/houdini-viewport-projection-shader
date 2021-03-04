@@ -11,6 +11,10 @@ layout(location=2) in float Alpha;
 layout(location=3) in vec3 N;
 layout(location=4) in vec2 uv;
 layout(location=6) in uint pointSelection;
+
+layout(location=9) in uint projection;
+layout(location=10) in vec3 rest;
+
 #else
 in vec3 P;
 in vec3 Cd;
@@ -18,6 +22,11 @@ in float Alpha;
 in vec3 N;
 in vec2 uv;
 in uint pointSelection;
+
+// Projection
+int uint projection;
+in vec3 rest;
+
 #endif
 
 layout(std140) uniform glH_Material
@@ -133,6 +142,10 @@ out parms
     vec4  color;
     vec2  texcoord0;
     float selected;
+
+    // Projection
+    flat out uint projection;
+    vec3 rest;
 } vsOut;
 
 #if defined(VENDOR_NVIDIA) && DRIVER_MAJOR >= 343
@@ -191,6 +204,9 @@ void main()
         vsOut.normal.z = -1.0;
     vsOut.selected  = isSel ? 1.0
                             : HOUpointSelection(pointSelection, instID);
+
+    vsOut.projection = projection;
+    vsOut.rest = rest;
     
     // projected position
     gl_Position = glH_ProjectMatrix * vpos;

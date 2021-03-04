@@ -13,6 +13,10 @@ in parms
     vec4  color;
     vec2  texcoord0;
     float selected;
+    
+    // Projection
+    flat in uint projection;
+    vec3 rest;
 } gsIn[];
 
 out wparms {
@@ -23,6 +27,10 @@ out wparms {
     noperspective out vec3 edgedist;
     flat out int edgeflags;
     float selected;
+
+    // Projection
+    flat out uint projection;
+    vec3 rest;
 } gsOut;
 
 #if defined(VENDOR_NVIDIA) && DRIVER_MAJOR >= 343
@@ -235,6 +243,11 @@ void main()
     gsOut.selected  = prim_selected ? 1.0 : gsIn[0].selected;
     gsOut.edgedist  = vec3(dist.x, 0.0, 0.0);
     gsOut.edgeflags = edgeflags;
+
+    // Projection
+    gsOut.projection = gsIn[0].projection;
+    gsOut.rest = gsIn[0].rest;
+
     gl_Position     = gl_in[0].gl_Position;
     gl_ClipDistance[0] = gl_in[0].gl_ClipDistance[0];
     gl_ClipDistance[1] = gl_in[0].gl_ClipDistance[1];
@@ -266,6 +279,11 @@ void main()
     gsOut.pos       = gsIn[1].pos;
     gsOut.edgedist  = vec3(0.0, dist.y, 0.0);
     gsOut.edgeflags = edgeflags;
+
+    // Projection
+    gsOut.projection = gsIn[1].projection;
+    gsOut.rest = gsIn[1].rest;
+
     gl_Position     = gl_in[1].gl_Position;
     gl_ClipDistance[0] = gl_in[1].gl_ClipDistance[0];
     gl_ClipDistance[1] = gl_in[1].gl_ClipDistance[1];
@@ -298,6 +316,11 @@ void main()
     gsOut.pos       = gsIn[2].pos;
     gsOut.edgedist  = vec3(0.0, 0.0, dist.z);
     gsOut.edgeflags = edgeflags;
+
+    // Projection
+    gsOut.projection = gsIn[2].projection;
+    gsOut.rest = gsIn[2].rest;
+
     gl_Position     = gl_in[2].gl_Position;
     gl_ClipDistance[0] = gl_in[2].gl_ClipDistance[0];
     gl_ClipDistance[1] = gl_in[2].gl_ClipDistance[1];
