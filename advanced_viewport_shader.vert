@@ -12,13 +12,13 @@ layout(location=3) in vec3 N;
 layout(location=4) in vec2 uv;
 layout(location=6) in uint pointSelection;
 
-layout(location=9) in vec3 rest;
-layout(location=10) in float projection;
-layout(location=11) in vec3 projection_x;
-layout(location=12) in vec3 projection_y;
-layout(location=13) in vec3 projection_z;
-layout(location=14) in vec3 projection_t;
-layout(location=15) in float projection_use_rest;
+layout(location=9) in float projection;
+layout(location=10) in vec3 projection_x;
+layout(location=11) in vec3 projection_y;
+layout(location=12) in vec3 projection_z;
+layout(location=13) in vec3 projection_t;
+layout(location=14) in float projection_use_baked;
+layout(location=15) in vec3 projection_pos;
 
 
 #else
@@ -30,13 +30,13 @@ in vec2 uv;
 in uint pointSelection;
 
 // Projection
-in vec3 rest;
 in float projection;
 in vec3 projection_x;
 in vec3 projection_y;
 in vec3 projection_z;
 in vec3 projection_t;
-in float projection_use_rest;
+in float projection_use_baked;
+in vec3 projection_pos;
 
 #endif
 
@@ -224,13 +224,15 @@ void main()
         vec4(projection_t, 1.0)
     );
 
-    vec3 projection_pos = projection_use_rest > 0.0 ? rest : P;
-
+    vec4 ppos = vec4(P, 1.0);
     if (vsOut.projection == 3) {
-        vsOut.rest = (projection_xform * glH_ObjectMatrix * vec4(projection_pos, 1.0)).xyz;
-    } else {
-        vsOut.rest = (projection_xform * vec4(projection_pos, 1.0)).xyz;
+        ppos = glH_ObjectMatrix * ppos;
     }
+    ppos = projection_xform * ppos;
+
+    vsOut.rest = projection_use_baked > 0.0
+        ? projection_pos
+        : ppos.xyz;
     
     // projected position
     gl_Position = glH_ProjectMatrix * vpos;
