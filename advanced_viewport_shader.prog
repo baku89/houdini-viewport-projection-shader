@@ -4,10 +4,11 @@
 #hou_attrib_map
 #input rest 9
 #input projection 10
-#input projection_t 11
+#input projection_x 11
 #input projection_y 12
 #input projection_z 13
-#input projection_use_rest 14
+#input projection_t 14
+#input projection_use_rest 15
 
 advanced_viewport_shader.vert
 advanced_viewport_shader.frag

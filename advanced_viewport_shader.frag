@@ -201,7 +201,7 @@ vec3 HOUfrontFacing(vec3 n, vec3 p);
 uniform float glH_Ambient;
 
 float atan2(in float y, in float x){
-    return x == 0.0 ? sign(y)*PI/2 : atan(y, x);
+    return x == 0.0 ? sign(y) * PI / 2.0 : atan(y, x);
 }
 
 void main()
@@ -233,7 +233,7 @@ void main()
     vec3 rest = fsIn.rest;
     if (fsIn.projection == 1) {
         // Parallel
-        texcoord = rest.xy;
+        texcoord = rest.xy / 2.0 + 0.5;
     } else if (fsIn.projection == 2) {
         // Spherical
         texcoord = vec2(

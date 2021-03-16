@@ -13,11 +13,12 @@ layout(location=4) in vec2 uv;
 layout(location=6) in uint pointSelection;
 
 layout(location=9) in vec3 rest;
-layout(location=10) in int projection;
-layout(location=11) in vec3 projection_t;
+layout(location=10) in float projection;
+layout(location=11) in vec3 projection_x;
 layout(location=12) in vec3 projection_y;
 layout(location=13) in vec3 projection_z;
-layout(location=14) in int projection_use_rest;
+layout(location=14) in vec3 projection_t;
+layout(location=15) in float projection_use_rest;
 
 
 #else
@@ -30,11 +31,12 @@ in uint pointSelection;
 
 // Projection
 in vec3 rest;
-in int projection;
-in vec3 projection_t;
+in float projection;
+in vec3 projection_x;
 in vec3 projection_y;
 in vec3 projection_z;
-in int projection_use_rest;
+in vec3 projection_t;
+in float projection_use_rest;
 
 #endif
 
@@ -214,9 +216,7 @@ void main()
     vsOut.selected  = isSel ? 1.0
                             : HOUpointSelection(pointSelection, instID);
 
-    vsOut.projection = projection;
-
-    vec3 projection_x = cross(projection_y, projection_z);
+    vsOut.projection = int(projection);
     mat4 projection_xform = mat4(
         vec4(projection_x, 0.0),
         vec4(projection_y, 0.0),
@@ -224,8 +224,13 @@ void main()
         vec4(projection_t, 1.0)
     );
 
-    vec3 projection_pos = projection_use_rest > 0 ? rest : P;
-    vsOut.rest = (projection_xform * glH_ObjectMatrix * vec4(projection_pos, 1.0)).xyz;
+    vec3 projection_pos = projection_use_rest > 0.0 ? rest : P;
+
+    if (vsOut.projection == 3) {
+        vsOut.rest = (projection_xform * glH_ObjectMatrix * vec4(projection_pos, 1.0)).xyz;
+    } else {
+        vsOut.rest = (projection_xform * vec4(projection_pos, 1.0)).xyz;
+    }
     
     // projected position
     gl_Position = glH_ProjectMatrix * vpos;
