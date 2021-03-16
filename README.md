@@ -2,7 +2,7 @@
 
 ![](./thumbs/image-based-modeling.gif)
 
-[A custom viewport shader](https://www.sidefx.com/docs/houdini/shade/glsl.html) for Houdini that supports various types of texture projection without baking UV as an attribute. Since the conventional UV mapping computes texture coordinates per vertex and interpolates them linearly along the surface, we need to subdivide meshes to avoid texture looking wobbly in some types of projection such as spherical mapping. Contrarily, this shader computes texture coordinates in the fragment level so we can use simple mesh as it is. It can be useful for image-based modeling. In addition, it supports baking the projection to points so we can displace mesh just like UV mapped one.
+[A custom viewport shader](https://www.sidefx.com/docs/houdini/shade/glsl.html) for Houdini that supports various types of texture projection without baking @uv attribute. Since the conventional UV mapping computes texture coordinates per vertex and interpolates them linearly along the surface, we need to subdivide meshes to avoid texture looking wobbly in some types of projection such as spherical mapping. Contrarily, this shader computes texture coordinates in the fragment level so we can use simple mesh as it is. It can be useful for image-based modeling. In addition, it supports baking the projection to points so we can displace mesh just like UV mapped one.
 
 Developed by [Baku Hashimoto](https://baku89.com)
 
